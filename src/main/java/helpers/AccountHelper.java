@@ -22,22 +22,14 @@ public class AccountHelper extends ApiHelper {
     }
 
     public TokenResponseDto generateToken() {
-        configure(baseURI, false);
-        JSONObject requestParams = new JSONObject();
-        requestParams.put("userName", manager.getUsername());
-        requestParams.put("password", manager.getPassword());
-        requestSpec.body(requestParams.toString());
+        setRequest();
         Response response = requestSpec.post("GenerateToken");
         System.out.println("POST GenerateToken: " + response.statusLine());
         return response.getBody().as(TokenResponseDto.class);
     }
 
     public LoginResponseDto login() {
-        configure(baseURI, false);
-        JSONObject requestParams = new JSONObject();
-        requestParams.put("userName", manager.getUsername());
-        requestParams.put("password", manager.getPassword());
-        requestSpec.body(requestParams.toString());
+        setRequest();
         Response response = requestSpec.post("Login");
         System.out.println("POST Login: " + response.statusLine());
         return response.getBody().as(LoginResponseDto.class);
@@ -48,5 +40,13 @@ public class AccountHelper extends ApiHelper {
         Response response = requestSpec.get("User/" + userId);
         System.out.println("GET User: " + response.statusLine());
         return response.getBody().as(UserResponseDto.class);
+    }
+
+    private void setRequest() {
+        configure(baseURI, false);
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("userName", manager.getUsername());
+        requestParams.put("password", manager.getPassword());
+        requestSpec.body(requestParams.toString());
     }
 }

@@ -16,7 +16,6 @@ public class BookStoreHelper extends ApiHelper {
         configure(baseUrl, false);
         Response response = requestSpec.get("Books");
         System.out.println("GET Books: " + response.statusLine());
-
         return response.getBody().as(BooksResponseDto.class).getBooks();
     }
 
@@ -43,24 +42,24 @@ public class BookStoreHelper extends ApiHelper {
     }
 
     public int deleteBook(String userId, String isbn) {
-        configure(baseUrl, true);
-        JSONObject requestParams = new JSONObject();
-        requestParams.put("isbn", isbn);
-        requestParams.put("userId", userId);
-        requestSpec.body(requestParams.toString());
+        setRequest(userId, isbn);
         Response response = requestSpec.delete("Book");
         System.out.println("DELETE Book: " + response.statusLine());
         return response.getStatusCode();
     }
 
     public int replaceBook(String userId, String isbnFrom, String isbnTo) {
-        configure(baseUrl, true);
-        JSONObject requestParams = new JSONObject();
-        requestParams.put("userId", userId);
-        requestParams.put("isbn", isbnTo);
-        requestSpec.body(requestParams.toString());
+        setRequest(userId, isbnTo);
         Response response = requestSpec.put("Books/" + isbnFrom);
         System.out.println("PUT Books: " + response.statusLine());
         return response.getStatusCode();
+    }
+
+    private void setRequest(String userId, String isbn) {
+        configure(baseUrl, true);
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("userId", userId);
+        requestParams.put("isbn", isbn);
+        requestSpec.body(requestParams.toString());
     }
 }
