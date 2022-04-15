@@ -1,0 +1,4 @@
+build
+allure-results
+/.idea/*
+/.gradle/*

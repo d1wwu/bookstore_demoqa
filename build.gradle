@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.rest-assured:rest-assured:5.0.1'
+    implementation 'io.rest-assured:json-path:5.0.1'
+    implementation 'io.rest-assured:xml-path:5.0.1'
+    implementation 'com.codeborne:selenide:6.4.0'
+    implementation 'org.testng:testng:7.5'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+    implementation 'io.qameta.allure:allure-testng:2.17.3'
+    implementation 'org.json:json:20220320'
+}
+
+task apiTests(type: Test) {
+    useTestNG() {
+        useDefaultListeners = true
+        suites 'src/test/resources/TestBookStore.xml'
+        includeGroups 'api'
+    }
+    systemProperties System.properties
+}
