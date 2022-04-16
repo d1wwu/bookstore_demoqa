@@ -1,6 +1,4 @@
 import data.BooksResponseDto;
-import data.LoginResponseDto;
-import data.TokenResponseDto;
 import helpers.AccountHelper;
 import helpers.BookStoreHelper;
 import io.qameta.allure.Description;
@@ -53,19 +51,12 @@ public class BaseAPITest {
     }
 
     private BooksResponseDto.Books loginAndAddBook() {
-        assertUserLogin();
+        userId = accountHelper.login().getUserId();
         Assert.assertEquals(bookStoreHelper.deleteBooks(userId), 204, "Can't prepare collection:");
         List<BooksResponseDto.Books> booksList = bookStoreHelper.getBooks();
         BooksResponseDto.Books randomBook = booksList.get(new Random().nextInt(booksList.size()));
         Assert.assertEquals(bookStoreHelper.addBook(userId, randomBook.getIsbn()), 201, "Can't add book to collection:");
         return randomBook;
-    }
-
-    private void assertUserLogin() {
-        TokenResponseDto tokenResponseDto = accountHelper.generateToken();
-        Assert.assertEquals(tokenResponseDto.getStatus(), AccountHelper.Status.SUCCESS.toString(), tokenResponseDto.getResult());
-        LoginResponseDto loginResponseDto = accountHelper.login();
-        userId = loginResponseDto.getUserId();
     }
 
     private boolean findBookInCollection(String isbn) {

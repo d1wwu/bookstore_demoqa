@@ -5,6 +5,7 @@ import data.TokenResponseDto;
 import data.UserResponseDto;
 import io.restassured.response.Response;
 import org.json.JSONObject;
+import org.testng.Assert;
 
 
 public class AccountHelper extends ApiHelper {
@@ -21,14 +22,16 @@ public class AccountHelper extends ApiHelper {
         }
     }
 
-    public TokenResponseDto generateToken() {
+    private void generateToken() {
         setRequest();
         Response response = requestSpec.post("GenerateToken");
         System.out.println("POST GenerateToken: " + response.statusLine());
-        return response.getBody().as(TokenResponseDto.class);
+        tokenResponseDto = response.getBody().as(TokenResponseDto.class);
+        Assert.assertEquals(tokenResponseDto.getStatus(), Status.SUCCESS.toString(), tokenResponseDto.getResult());
     }
 
     public LoginResponseDto login() {
+        generateToken();
         setRequest();
         Response response = requestSpec.post("Login");
         System.out.println("POST Login: " + response.statusLine());

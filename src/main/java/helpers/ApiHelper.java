@@ -1,8 +1,10 @@
 package helpers;
 
 import core.TestManager;
+import data.TokenResponseDto;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
+import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
 
@@ -10,6 +12,7 @@ public class ApiHelper {
 
     protected final TestManager manager;
     protected RequestSpecification requestSpec;
+    protected static TokenResponseDto tokenResponseDto;
 
     public ApiHelper() {
         manager = TestManager.getInstance();
@@ -18,9 +21,10 @@ public class ApiHelper {
     protected void configure(String baseURI, boolean auth) {
         RestAssured.baseURI = baseURI;
         if (auth) {
-            requestSpec = given().auth().preemptive().basic(manager.getUsername(), manager.getPassword());
+            Assert.assertNotNull(tokenResponseDto, "This user has not token:");
+            requestSpec = given().headers("Authorization" , "Bearer " + tokenResponseDto.getToken());
         } else {
-            requestSpec = RestAssured.given();
+            requestSpec = given();
         }
         requestSpec.header("Content-Type", "application/json");
     }
