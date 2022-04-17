@@ -13,11 +13,17 @@ public class BaseAPITest {
     private AccountHelper accountHelper;
     private BookStoreHelper bookStoreHelper;
     private String userId;
+    BooksResponseDto.Books book;
 
     @BeforeTest(alwaysRun = true)
     public void init() {
         accountHelper = new AccountHelper();
         bookStoreHelper = new BookStoreHelper();
+    }
+
+    @BeforeMethod(alwaysRun = true)
+    public void beforeMethod() {
+        book = loginAndAddBook();
     }
 
     @AfterTest(alwaysRun = true)
@@ -28,14 +34,12 @@ public class BaseAPITest {
     @Test(priority = 1, groups = "api")
     @Description("Test Case1 - Book added to collection")
     public void addBookTest() {
-        BooksResponseDto.Books book = loginAndAddBook();
         Assert.assertTrue(findBookInCollection(book.getIsbn()), "Book not added to collection:");
     }
 
     @Test(priority = 2, groups = "api")
     @Description("Test Case2 - Book deleted from collection")
     public void deleteBookTest() {
-        BooksResponseDto.Books book = loginAndAddBook();
         Assert.assertEquals(bookStoreHelper.deleteBook(userId, book.getIsbn()), 204, "Book is absent in collection:");
         Assert.assertFalse(findBookInCollection(book.getIsbn()), "Book not deleted from collection:");
     }
@@ -43,7 +47,6 @@ public class BaseAPITest {
     @Test(priority = 3, groups = "api")
     @Description("Test Case3 - Book replaced in collection")
     public void replaceBookTest() {
-        BooksResponseDto.Books book = loginAndAddBook();
         String isbn = extractAnotherBook(book);
         Assert.assertNotNull(isbn, "No data is available:");
         Assert.assertEquals(bookStoreHelper.replaceBook(userId, book.getIsbn(), isbn), 200, "Can't replace book in collection:");
