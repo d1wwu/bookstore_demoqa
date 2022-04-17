@@ -21,7 +21,8 @@ public class ApiHelper {
     protected void configure(String baseURI, boolean auth) {
         RestAssured.baseURI = baseURI;
         if (auth) {
-            Assert.assertNotNull(tokenResponseDto, "This user has not token:");
+            Assert.assertNotNull(tokenResponseDto, "Token was not generated:");
+            Assert.assertNotNull(tokenResponseDto.getToken(), "This user has not token:");
             requestSpec = given().headers("Authorization" , "Bearer " + tokenResponseDto.getToken());
         } else {
             requestSpec = given();
