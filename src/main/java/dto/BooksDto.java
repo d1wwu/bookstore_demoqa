@@ -1,4 +1,4 @@
-package data;
+package dto;
 
 import java.util.List;
 
