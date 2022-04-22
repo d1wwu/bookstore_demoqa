@@ -1,6 +1,5 @@
 package api;
 
-import assertions.Matcher;
 import base.BaseTest;
 import dto.BooksResponseDto;
 import io.qameta.allure.Description;
@@ -9,6 +8,8 @@ import org.testng.annotations.*;
 
 import java.util.List;
 import java.util.Random;
+
+import static assertions.Matcher.*;
 
 public class APITest extends BaseTest {
 
@@ -22,7 +23,7 @@ public class APITest extends BaseTest {
     public void addBookTest() {
         login();
         BooksResponseDto.Books book = addBook();
-        Matcher.assertTrue(() -> findBookInCollection(book.getIsbn()), "Book added to collection");
+        assertTrue(() -> findBookInCollection(book.getIsbn()), "Book added to collection");
     }
 
     @Test(groups = "api")
@@ -30,9 +31,9 @@ public class APITest extends BaseTest {
     public void deleteBookTest() {
         login();
         BooksResponseDto.Books book = addBook();
-        Matcher.assertEquals(() -> bookStoreHelper.deleteBook(userId, book.getIsbn()), 204,
+        assertEquals(() -> bookStoreHelper.deleteBook(userId, book.getIsbn()), 204,
                 "Delete book from collection");
-        Matcher.assertFalse(() -> findBookInCollection(book.getIsbn()), "Book found in collection");
+        assertFalse(() -> findBookInCollection(book.getIsbn()), "Book found in collection");
     }
 
     @Test(groups = "api")
@@ -41,10 +42,10 @@ public class APITest extends BaseTest {
         login();
         BooksResponseDto.Books book = addBook();
         BooksResponseDto.Books anotherBook = extractAnotherBook(book);
-        Matcher.assertNotNull(anotherBook, "Another book is available");
-        Matcher.assertEquals(() -> bookStoreHelper.replaceBook(userId, book.getIsbn(), anotherBook.getIsbn()),
+        assertNotNull(anotherBook, "Another book is available");
+        assertEquals(() -> bookStoreHelper.replaceBook(userId, book.getIsbn(), anotherBook.getIsbn()),
                 200, "Replace book in collection");
-        Matcher.assertTrue(() -> findBookInCollection(anotherBook.getIsbn()), "Book replaced in collection");
+        assertTrue(() -> findBookInCollection(anotherBook.getIsbn()), "Book replaced in collection");
     }
 
     private BooksResponseDto.Books addBook() {
