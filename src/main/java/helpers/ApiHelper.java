@@ -1,32 +1,31 @@
 package helpers;
 
 import core.TestManager;
-import data.TokenResponseDto;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
 
 public class ApiHelper {
 
+    private static final String baseURI = "https://demoqa.com";
     protected final TestManager manager;
     protected RequestSpecification requestSpec;
-    protected static TokenResponseDto tokenResponseDto;
+    protected static String token;
 
     public ApiHelper() {
         manager = TestManager.getInstance();
+        RestAssured.baseURI = baseURI;
     }
 
-    protected void configure(String baseURI, boolean auth) {
-        RestAssured.baseURI = baseURI;
-        if (auth) {
-            Assert.assertNotNull(tokenResponseDto, "Token was not generated:");
-            Assert.assertNotNull(tokenResponseDto.getToken(), "This user has not token:");
-            requestSpec = given().headers("Authorization" , "Bearer " + tokenResponseDto.getToken());
-        } else {
-            requestSpec = given();
+    protected void setRequestSpec(boolean auth) {
+        requestSpec = given()
+                .filter(new FilterHelper())
+                .contentType(ContentType.JSON);
+        if (auth && token != null) {
+            requestSpec
+                    .headers("Authorization", "Bearer " + token);
         }
-        requestSpec.header("Content-Type", "application/json");
     }
 }

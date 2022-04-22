@@ -1,4 +1,4 @@
-package data;
+package dto;
 
 public class TokenResponseDto {
 

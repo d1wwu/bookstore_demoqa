@@ -1,7 +1,7 @@
 package helpers;
 
-import data.BooksDto;
-import data.BooksResponseDto;
+import dto.BooksDto;
+import dto.BooksResponseDto;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 
@@ -10,12 +10,9 @@ import java.util.List;
 
 public class BookStoreHelper extends ApiHelper {
 
-    private final String baseUrl = "https://demoqa.com/BookStore/v1/";
-
     public List<BooksResponseDto.Books> getBooks() {
-        configure(baseUrl, false);
-        Response response = requestSpec.get("Books");
-        System.out.println("GET Books: " + response.statusLine());
+        setRequestSpec(false);
+        Response response = requestSpec.get(RouteHelper.books());
         return response.getBody().as(BooksResponseDto.class).getBooks();
     }
 
@@ -27,36 +24,32 @@ public class BookStoreHelper extends ApiHelper {
         isbnItem.setIsbn(isbn);
         isbns.add(isbnItem);
         booksDto.setCollectionOfIsbns(isbns);
-        configure(baseUrl, true);
+        setRequestSpec(true);
         requestSpec.body(booksDto);
-        Response response = requestSpec.post("Books");
-        System.out.println("POST Books: " + response.statusLine());
+        Response response = requestSpec.post(RouteHelper.books());
         return response.getStatusCode();
     }
 
     public int deleteBooks(String userId) {
-        configure(baseUrl, true);
-        Response response = requestSpec.delete("Books/?UserId=" + userId);
-        System.out.println("DELETE Books: " + response.statusLine());
+        setRequestSpec(true);
+        Response response = requestSpec.delete(RouteHelper.userBooks(userId));
         return response.getStatusCode();
     }
 
     public int deleteBook(String userId, String isbn) {
-        setRequest(userId, isbn);
-        Response response = requestSpec.delete("Book");
-        System.out.println("DELETE Book: " + response.statusLine());
+        setRequestSpec(userId, isbn);
+        Response response = requestSpec.delete(RouteHelper.book());
         return response.getStatusCode();
     }
 
     public int replaceBook(String userId, String isbnFrom, String isbnTo) {
-        setRequest(userId, isbnTo);
-        Response response = requestSpec.put("Books/" + isbnFrom);
-        System.out.println("PUT Books: " + response.statusLine());
+        setRequestSpec(userId, isbnTo);
+        Response response = requestSpec.put(RouteHelper.isbnBook(isbnFrom));
         return response.getStatusCode();
     }
 
-    private void setRequest(String userId, String isbn) {
-        configure(baseUrl, true);
+    private void setRequestSpec(String userId, String isbn) {
+        setRequestSpec(true);
         JSONObject requestParams = new JSONObject();
         requestParams.put("userId", userId);
         requestParams.put("isbn", isbn);
