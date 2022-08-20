@@ -2,9 +2,33 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Book Store Test Suite" parallel="tests" thread-count="1">
 
-    <test name="Book Store API test">
+    <test name="Add book">
         <classes>
-            <class name="BaseAPITest"/>
+            <class name="api.APITest">
+                <methods>
+                    <include name="addBookTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Delete book">
+        <classes>
+            <class name="api.APITest">
+                <methods>
+                    <include name="deleteBookTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Replace book">
+        <classes>
+            <class name="api.APITest">
+                <methods>
+                    <include name="replaceBookTest"/>
+                </methods>
+            </class>
         </classes>
     </test>
 
